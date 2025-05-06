@@ -31,6 +31,7 @@ pip install -r requirements.txt
 ```ini
 PINECONE_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 MISTRAL_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+FLASK_SECRET_KEY= "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
 
