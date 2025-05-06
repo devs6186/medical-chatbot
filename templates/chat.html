@@ -114,6 +114,18 @@
             color: #2d3748;
             font-size: 16px;
         }
+
+        .typing-indicator {
+            background-color: #ebf8ff;
+            padding: 15px 20px;
+            border-radius: 18px 18px 18px 0;
+            max-width: 75%;
+            display: inline-block;
+            color: #2d3748;
+            font-size: 16px;
+            opacity: 0.7;
+            font-style: italic;
+        }
         
         .input-area {
             display: flex;
@@ -169,20 +181,38 @@
         const inputField = document.querySelector(".input-area input");
         const sendButton = document.querySelector(".input-area button");
         const chatMessages = document.querySelector(".chat-messages");
-    
+
+        function showTypingIndicator() {
+            const typingIndicator = document.createElement("div");
+            typingIndicator.className = "message bot-message typing-indicator";
+            typingIndicator.innerHTML = `<strong>Dr. Insight:</strong> ...`;
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector(".typing-indicator");
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
         function sendMessage() {
             const userMessage = inputField.value.trim();
             if (userMessage === "") return; // Prevent empty messages
-            
+
             // Add user message to chat
             const userChat = document.createElement("div");
             userChat.className = "message user-message";
             userChat.innerHTML = `<strong>You:</strong> ${userMessage}`;
             chatMessages.appendChild(userChat);
-    
+
             // Clear input field
             inputField.value = "";
-    
+
+            // Show typing indicator
+            showTypingIndicator();
+
             // Send message to Flask backend
             fetch("/chat", {
                 method: "POST",
@@ -192,19 +222,25 @@
             .then(response => response.json())
             .then(data => {
                 const botResponse = data.response || "I'm not sure how to respond.";
-                
+
+                // Remove typing indicator
+                removeTypingIndicator();
+
                 // Add bot response to chat
                 const botChat = document.createElement("div");
                 botChat.className = "message bot-message";
                 botChat.innerHTML = `<strong>Dr. Insight:</strong> ${botResponse}`;
                 chatMessages.appendChild(botChat);
-    
+
                 // Auto-scroll to latest message
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             })
             .catch(error => {
                 console.error("Error:", error);
-    
+
+                // Remove typing indicator
+                removeTypingIndicator();
+
                 // Show error message in chat
                 const errorChat = document.createElement("div");
                 errorChat.className = "message bot-message";
@@ -213,10 +249,10 @@
                 chatMessages.appendChild(errorChat);
             });
         }
-    
+
         // Send message on button click
         sendButton.addEventListener("click", sendMessage);
-    
+
         // Send message on Enter key
         inputField.addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
@@ -224,58 +260,56 @@
             }
         });
     });
-    </script>
-    
-    
+</script>
 <body>
     <div class="header">
         <h1>Dr. Insight</h1>
         <p>AI-Powered Medical Assistant</p>
     </div>
-    
+
     <div class="tagline">
         Your 24/7 Personal Health Companion
     </div>
-    
+
     <div class="features">
         <div class="feature-card">
             <div class="feature-icon">⚕️</div>
             <div class="feature-title">Symptom Analysis</div>
             <p>Get instant insights about your symptoms and possible conditions</p>
         </div>
-        
+
         <div class="feature-card">
             <div class="feature-icon">🕒</div>
             <div class="feature-title">24/7 Availability</div>
             <p>Always available when you need medical information</p>
         </div>
-        
+
         <div class="feature-card">
             <div class="feature-icon">🔒</div>
             <div class="feature-title">Private & Secure</div>
             <p>Your health data remains confidential and protected</p>
         </div>
     </div>
-    
+
     <div class="chat-container">
         <div class="chat-header">
             Dr. Insight Chat
         </div>
-        
+
         <div class="chat-messages">
             <div class="message bot-message">
-                Hello! I'm Dr. Insight, your AI medical assistant. I can help with symptom analysis, medication information, and general health advice. How can I assist you today?
+                Hello! I'm Dr. Insight, your AI medical assistant. I can help with symptom analysis, medication information, and more. How can I assist you today?
             </div>
         </div>
-        
+
         <div class="input-area">
-            <input type="text" placeholder="Describe your symptoms or ask a health question...">
+            <input type="text" placeholder="Type your message..." />
             <button>Send</button>
         </div>
     </div>
-    
+
     <div class="disclaimer">
-        Note: Dr. Insight provides health information for educational purposes only and is not a substitute for professional medical advice. Always consult a healthcare provider for personal medical concerns.
+        <p>Disclaimer: This AI assistant provides information for educational purposes and is not a substitute for professional medical advice.</p>
     </div>
 </body>
 </html>
