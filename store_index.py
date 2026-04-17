@@ -62,10 +62,7 @@ docsearch = PineconeVectorStore.from_documents(
     index_name=index_name,
     namespace="medical_data",
     batch_size=128,
-    text_key="text",
-    metadata_config={
-        "indexed": ["source", "page"]  # Optimize these metadata fields for filtering
-    }
+    text_key="text"
 )
 
 # Verify storage
